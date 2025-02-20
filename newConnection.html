@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Dark/Light Mode</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar is-primary is-fixed-top">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="#">
+                <strong>Dashboard</strong>
+            </a>
+            
+        </div>
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <button id="modeToggle">
+                    <i id="modeIcon" class="bi bi-moon"></i> <!-- Initial moon icon for light mode -->
+                  </button>
+                  
+            </div>
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">Account</a>
+              <div class="navbar-dropdown">
+                <a class="navbar-item">Profile</a>
+                <a class="navbar-item">Settings</a>
+                <hr class="navbar-divider">
+                <a class="navbar-item">Logout</a>
+              </div>
+            </div>
+          </div>
+        
+    </nav>
+
+    <div class="app-layout">
+         <!-- Left Sidebar -->
+        <div id="leftSidebar" class="sidebar left-sidebar">
+            <button class="button is-small slider-icon is-primary bounceIn" onclick="toggleSidebar('leftSidebar')">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="arrow">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
+                </svg>
+                
+            </button>
+            <button class="button is-small is-dark" onclick="toggleSidebar('leftSidebar')"><i class="bi bi-box-arrow-left" style="font-size: 17px;"></i></button>
+            <a class="button is-primary mt-5" style="display: block;" href="newConnection.html">
+                <span class="icon">
+                    <i class="bi bi-database-fill"></i>
+                </span>
+                <span>Add a New Connection</span>
+              </a>
+            <div class="storage-menu is-right" id="storageMenu">
+                <div class="storage-trigger mt-5">
+                    <button class="button" style="display: block; width: 100%;" onclick="toggleStorageMenu()">
+                        
+                        <span>Admin Organization</span>
+                        <span class="icon"><i class="bi bi-caret-down-fill"></i></span>
+                    </button>
+                </div>
+                <div class="storage-items">
+                    <div class="dropdown-item is-flex is-justify-content-space-between">
+                        <span><i class="bi bi-globe"></i> Connection 1</span>
+                        <button class="button is-small is-light" onclick="openContextMenu(event, 'conn1')">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                    </div>
+                    <div class="dropdown-item is-flex is-justify-content-space-between">
+                        <span><i class="bi bi-globe"></i> Connection 2</span>
+                        <button class="button is-small is-light" onclick="openContextMenu(event, 'conn2')">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                    </div>
+                    <div class="dropdown-item is-flex is-justify-content-space-between">
+                        <span><i class="bi bi-globe"></i> Connection 3</span>
+                        <button class="button is-small is-light" onclick="openContextMenu(event, 'conn3')">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+    
+    <!-- Context Menu -->
+    <div class="context-menu" id="contextMenu">
+        <a href="#" onclick="renameConnection()">Rename</a>
+        <a href="#" onclick="deleteConnection()">Delete</a>
+        <a href="#" onclick="openSettings()">Settings</a>
+    </div>
+        </div>
+
+        <!-- Main Content -->
+        <div id="mainContent" class="main-content pt-5 mt-5">
+            
+            <div class="card p-5 createNewConnec">
+                <h2 class="title is-4">Add New Connection</h2>
+              
+                <!-- Error Message -->
+                <div class="notification is-danger is-light">
+                  <button class="delete"></button>
+                  S3 Bucket Name is required
+                </div>
+              
+                <!-- Connection Name -->
+                <div class="field">
+                  <label class="label">Connection Name</label>
+                  <div class="control">
+                    <input class="input" type="text" placeholder="Enter connection name">
+                  </div>
+                </div>
+              
+                <!-- Connection Type -->
+                <div class="field">
+                  <label class="label">Connection Type</label>
+                  <div class="control">
+                    <div class="select is-fullwidth">
+                      <select>
+                        <option>Amazon S3 Bucket</option>
+                        <option>Google Drive</option>
+                        <option>Azure Blob Storage</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              
+                <!-- Configuration Section -->
+                <h3 class="subtitle is-5">Set Up Configuration</h3>
+                <p class="mb-4">Fill out the configuration form below. Then test the connection to ensure it works.</p>
+              
+                <!-- S3 Bucket Name -->
+                <div class="field">
+                  <label class="label">S3 Bucket Name</label>
+                  <div class="control">
+                    <input class="input" type="text" placeholder="Enter S3 bucket name">
+                  </div>
+                </div>
+              
+                <!-- Bucket Region -->
+                <div class="field">
+                  <label class="label">Bucket Region</label>
+                  <div class="control">
+                    <input class="input" type="text" placeholder="e.g., us-east-1, us-west-1">
+                  </div>
+                  <p class="help">Specify the AWS region for your S3 bucket.</p>
+                </div>
+              
+                <!-- Access Key -->
+                <div class="field">
+                  <label class="label">Access Key</label>
+                  <div class="control">
+                    <input class="input" type="text" placeholder="Enter AWS Access Key">
+                  </div>
+                  <p class="help">Your AWS IAM Access Key ID.</p>
+                </div>
+              
+                <!-- Access Secret -->
+                <div class="field">
+                  <label class="label">Access Secret</label>
+                  <div class="control">
+                    <input class="input" type="password" placeholder="Enter AWS Secret Key">
+                  </div>
+                  <p class="help">Keep this secret safe and do not share it.</p>
+                </div>
+              
+                <!-- Test Connection Button -->
+                <div class="field">
+                  <div class="control">
+                    <button class="button is-link is-fullwidth">Test Connection</button>
+                  </div>
+                </div>
+              </div>
+              
+              <footer class="footer-menu">
+                <nav class="footer-links">
+                  <a href="#" class="active">
+                    <i class="bi bi-house-door"></i>
+                    <span>Home</span>
+                  </a>
+                  <a href="#">
+                    <i class="bi bi-grid"></i>
+                    <span>Dashboard</span>
+                  </a>
+                  <a href="#">
+                    <i class="bi bi-bell"></i>
+                    <span>Alerts</span>
+                  </a>
+                  <a href="#">
+                    <i class="bi bi-gear"></i>
+                    <span>Settings</span>
+                  </a>
+                  <a href="#">
+                    <i class="bi bi-person-circle"></i>
+                    <span>Profile</span>
+                  </a>
+                </nav>
+              </footer>
+              
+              
+        </div>
+         
+    
+
+        <!-- Right Sidebar -->
+        <div id="rightSidebar" class="sidebar right-sidebar">
+            <button class="button is-small is-dark" onclick="toggleSidebar('rightSidebar')"><i class="bi bi-box-arrow-right" style="font-size: 17px;"></i></button>
+            
+            <button class="button is-small slider-icon is-primary bounceIn" onclick="toggleSidebar('rightSidebar')">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="arrow">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5" />
+                </svg>
+            </button>
+            <div class="rightBarSection">
+                
+                <div class="panel">
+                    <div class="chatboxWraper has-text-centered">
+                        <h2 class="title">How can I help you today?</h2>
+                        
+                        <div class="chat-box">
+                            <div class="field has-addons">
+                                <button class="control icon left">
+                                    <i class="bi bi-paperclip"></i>
+                                </button>
+                                <textarea class="input" placeholder="Type your message..."></textarea>
+                                <button class="control icon right">
+                                    <i class="bi bi-arrow-up-circle"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="buttons is-centered" style="margin-top: 30px;">
+                            <button class="button is-light" style="margin: 0 10px;"><span class="icon"><i class="bi bi-pencil"></i></span> Help me write</button>
+                            <button class="button is-light" style="margin: 0 10px;"><span class="icon"><i class="bi bi-image"></i></span> Create images</button>
+                            <button class="button is-light" style="margin: 0 10px;"><span class="icon"><i class="bi bi-code"></i></span> Code</button>
+                        </div>
+                    </div>
+            
+                  
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+   
+
+
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="js/media.js"></script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>

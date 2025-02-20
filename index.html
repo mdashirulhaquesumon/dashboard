@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Dark/Light Mode</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar is-primary is-fixed-top">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="#">
+                <strong>Dashboard</strong>
+            </a>
+            
+        </div>
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <button id="modeToggle">
+                    <i id="modeIcon" class="bi bi-moon"></i> <!-- Initial moon icon for light mode -->
+                  </button>
+                  
+            </div>
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">Account</a>
+              <div class="navbar-dropdown">
+                <a class="navbar-item">Profile</a>
+                <a class="navbar-item">Settings</a>
+                <hr class="navbar-divider">
+                <a class="navbar-item">Logout</a>
+              </div>
+            </div>
+          </div>
+        
+    </nav>
+
+    <div class="app-layout">
+         <!-- Left Sidebar -->
+        <div id="leftSidebar" class="sidebar left-sidebar">
+            <button class="button is-small slider-icon is-primary bounceIn" onclick="toggleSidebar('leftSidebar')">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="arrow">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
+                </svg>
+                
+            </button>
+            <button class="button is-small is-dark" onclick="toggleSidebar('leftSidebar')"><i class="bi bi-box-arrow-left" style="font-size: 17px;"></i></button>
+            <a class="button is-primary mt-5" style="display: block;" href="newConnection.html">
+                <span class="icon">
+                    <i class="bi bi-database-fill"></i>
+                </span>
+                <span>Add a New Connection</span>
+              </a>
+            <div class="storage-menu is-right" id="storageMenu">
+                <div class="storage-trigger mt-5">
+                    <button class="button" style="display: block; width: 100%;" onclick="toggleStorageMenu()">
+                        
+                        <span>Admin Organization</span>
+                        <span class="icon"><i class="bi bi-caret-down-fill"></i></span>
+                    </button>
+                </div>
+                <div class="storage-items">
+                    <div class="dropdown-item is-flex is-justify-content-space-between">
+                        <span><i class="bi bi-globe"></i> Connection 1</span>
+                        <button class="button is-small is-light" onclick="openContextMenu(event, 'conn1')">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                    </div>
+                    <div class="dropdown-item is-flex is-justify-content-space-between">
+                        <span><i class="bi bi-globe"></i> Connection 2</span>
+                        <button class="button is-small is-light" onclick="openContextMenu(event, 'conn2')">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                    </div>
+                    <div class="dropdown-item is-flex is-justify-content-space-between">
+                        <span><i class="bi bi-globe"></i> Connection 3</span>
+                        <button class="button is-small is-light" onclick="openContextMenu(event, 'conn3')">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <a class="button is-light mt-5" style="display: block; text-align: left;" href="#">
+                <span class="icon">
+                    <i class="bi bi-google"></i>
+                </span>
+                <span>Banyan Video Files</span>
+              </a>
+              <a class="button is-light" style="display: block; text-align: left;" href="#">
+                <span class="icon">
+                    <i class="bi bi-google"></i>
+                </span>
+                <span>Google Drive</span>
+              </a>
+        </div>
+    </section>
+    
+    <!-- Context Menu -->
+    <div class="context-menu" id="contextMenu">
+        <a href="#" onclick="renameConnection()">Rename</a>
+        <a href="#" onclick="deleteConnection()">Delete</a>
+        <a href="#" onclick="openSettings()">Settings</a>
+    </div>
+        </div>
+
+        <!-- Main Content -->
+        <div id="mainContent" class="main-content pt-5 mt-5">
+            <div class="columns pt-5 mt-5">
+                <div class="column is-half field has-addons is-centered ">
+                <div class="control is-expanded">
+                    <input id="searchInput" class="input is-medium is-rounded" type="text" placeholder="Search images..." />
+                </div>
+                <div class="control">
+                    <button id="searchButton" class="button is-primary is-medium is-rounded has-shadow">
+                    <i class="bi bi-search"></i>
+                    </button>
+                </div>
+                </div>
+                <!-- Tabs for Navigation -->
+                <div class="column is-half tabs top-m-tab is-toggle is-fullwidth">
+                    <ul>
+                        <li class="" data-tab="syncList">
+                            <a class="p-0"><i class="bi bi-arrow-repeat"></i></a>
+                        </li>
+                        <li data-tab="newConnection">
+                            <a class="p-0"><i class="bi bi-folder-plus"></i></a>
+                        </li>
+                        <li data-tab="mediaList">
+                            <a class="p-0"><i class="bi bi-list"></i></a>
+                        </li>
+                        <li data-tab="account">
+                            <a class="p-0"><i class="bi bi-grid"></i></a>
+                        </li>
+                        <!-- Wrapping the dropdown inside an <li> -->
+                        <li>
+                            <div class="dropdown is-hoverable" id="storageConnDropdown">
+                                <div class="dropdown-trigger">
+                                    <button class="button" aria-haspopup="true" aria-controls="storageConnDropdownMenu">
+                                        <span class="icon is-small">
+                                            <i class="bi bi-eye"></i>
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="dropdown-menu" id="storageConnDropdownMenu" role="menu">
+                                    <ul class="dropdown-content">
+                                        <li data-tab="allCollection"><a  href="#" class="dropdown-item">View Collection</a></li>
+                                        <li><a href="#" class="dropdown-item">View List</a></li>
+                                        <li><a href="#" class="dropdown-item">View Grid</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    
+                </div>
+
+            </div>
+            <!-- Search Form -->
+        <!-- Connection List Section -->
+         
+        <div id="syncList" class="tab-content ">
+            <div class="card p-5">
+                <h2 class="title is-4">Sync Job Form</h2>
+              
+                <div class="field has-addons">
+                  <div class="control is-expanded">
+                    <input class="input" type="text" placeholder="Search">
+                  </div>
+                  <div class="control">
+                    <button class="button is-primary">Search</button>
+                  </div>
+                </div>
+              
+                <div class="field">
+                  <label class="label">Sync Job Type</label>
+                  <div class="control">
+                    <div class="select is-fullwidth">
+                      <select>
+                        <option>- Select a value -</option>
+                        <option>Full Sync</option>
+                        <option>Incremental Sync</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              
+                <div class="field">
+                  <div class="control">
+                    <label class="checkbox">
+                      <input type="checkbox">
+                      Sync Job Reprocess AI
+                    </label>
+                  </div>
+                </div>
+              
+                <div class="field">
+                  <label class="label">Hard Limit to Sync</label>
+                  <div class="control">
+                    <input class="input" type="number" placeholder="Enter limit">
+                  </div>
+                </div>
+              
+                <div class="field">
+                  <label class="label">Only Sync Items of Type</label>
+                  <div class="control">
+                    <div class="select is-multiple is-fullwidth">
+                      <select multiple>
+                        <option>Audio Files</option>
+                        <option>Documents</option>
+                        <option>Images</option>
+                        <option>Videos</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              
+                <div class="field">
+                  <label class="label">Only Sync Items Created After</label>
+                  <div class="control">
+                    <input class="input" type="date">
+                  </div>
+                  <div class="control mt-2">
+                    <input class="input" type="time">
+                  </div>
+                </div>
+              
+                <div class="field">
+                  <div class="control">
+                    <button class="button is-success">Save</button>
+                  </div>
+                </div>
+              </div>
+        </div>
+            <!-- Create New Connection Section -->
+        <div id="newConnection" class="tab-content">
+         
+        </div>
+        <!-- Collection Grid -->
+         <div id="allCollection"  class="tab-content">
+             <div class="columns is-multiline mt-5">
+               <!-- Folder 1 -->
+               <div class="column is-half">
+                 <a href="vacation-photos.html" class="collection-item">
+                   <div class="card">
+                     <div class="card-content">
+                       <div class="media">
+                         <div class="media-left">
+                           <span class="icon is-large">
+                             <i class="bi bi-folder"></i>
+                           </span>
+                         </div>
+                         <div class="media-content">
+                           <p class="title is-5">Vacation Photos</p>
+                           <p class="subtitle is-7">50 items</p>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 </a>
+               </div>
+       
+               <!-- Folder 2 -->
+               <div class="column is-half">
+                 <a href="work-documents.html" class="collection-item">
+                   <div class="card">
+                     <div class="card-content">
+                       <div class="media">
+                         <div class="media-left">
+                           <span class="icon is-large">
+                             <i class="bi bi-folder"></i>
+                           </span>
+                         </div>
+                         <div class="media-content">
+                           <p class="title is-5">Work Documents</p>
+                           <p class="subtitle is-7">120 items</p>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 </a>
+               </div>
+       
+               <!-- Folder 3 -->
+               <div class="column is-half">
+                 <a href="music-playlist.html" class="collection-item">
+                   <div class="card">
+                     <div class="card-content">
+                       <div class="media">
+                         <div class="media-left">
+                           <span class="icon is-large">
+                             <i class="bi bi-folder"></i>
+                           </span>
+                         </div>
+                         <div class="media-content">
+                           <p class="title is-5">Music Playlist</p>
+                           <p class="subtitle is-7">200 items</p>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 </a>
+               </div>
+       
+               <!-- Folder 4 -->
+               <div class="column is-half">
+                 <a href="project-files.html" class="collection-item">
+                   <div class="card">
+                     <div class="card-content">
+                       <div class="media">
+                         <div class="media-left">
+                           <span class="icon is-large">
+                             <i class="bi bi-folder"></i>
+                           </span>
+                         </div>
+                         <div class="media-content">
+                           <p class="title is-5">Project Files</p>
+                           <p class="subtitle is-7">80 items</p>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 </a>
+               </div>
+       
+               <!-- Folder 5 -->
+               <div class="column is-half">
+                 <a href="family-videos.html" class="collection-item">
+                   <div class="card">
+                     <div class="card-content">
+                       <div class="media">
+                         <div class="media-left">
+                           <span class="icon is-large">
+                             <i class="bi bi-folder"></i>
+                           </span>
+                         </div>
+                         <div class="media-content">
+                           <p class="title is-5">Family Videos</p>
+                           <p class="subtitle is-7">30 items</p>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 </a>
+               </div>
+       
+               <!-- Folder 6 -->
+               <div class="column is-half">
+                 <a href="design-assets.html" class="collection-item">
+                   <div class="card">
+                     <div class="card-content">
+                       <div class="media">
+                         <div class="media-left">
+                           <span class="icon is-large">
+                             <i class="bi bi-folder"></i>
+                           </span>
+                         </div>
+                         <div class="media-content">
+                           <p class="title is-5">Design Assets</p>
+                           <p class="subtitle is-7">150 items</p>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 </a>
+               </div>
+       
+               <!-- Folder 7 -->
+               <div class="column is-half">
+                 <a href="personal-docs.html" class="collection-item">
+                   <div class="card">
+                     <div class="card-content">
+                       <div class="media">
+                         <div class="media-left">
+                           <span class="icon is-large">
+                             <i class="bi bi-folder"></i>
+                           </span>
+                         </div>
+                         <div class="media-content">
+                           <p class="title is-5">Personal Docs</p>
+                           <p class="subtitle is-7">40 items</p>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 </a>
+               </div>
+       
+               <!-- Folder 8 -->
+               <div class="column is-half">
+                 <a href="travel-plans.html" class="collection-item">
+                   <div class="card">
+                     <div class="card-content">
+                       <div class="media">
+                         <div class="media-left">
+                           <span class="icon is-large">
+                             <i class="bi bi-folder"></i>
+                           </span>
+                         </div>
+                         <div class="media-content">
+                           <p class="title is-5">Travel Plans</p>
+                           <p class="subtitle is-7">25 items</p>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 </a>
+               </div>
+             </div>
+
+         </div>
+        <div id="loading" class="has-text-centered is-hidden mt-4">Loading...</div>
+        <div id="resultsContainer" class="columns is-multiline mt-5"></div>
+        <footer class="footer-menu">
+            <nav class="footer-links">
+              <a href="#" class="active">
+                <i class="bi bi-house-door"></i>
+                <span>Home</span>
+              </a>
+              <a href="#">
+                <i class="bi bi-grid"></i>
+                <span>Dashboard</span>
+              </a>
+              <a href="#">
+                <i class="bi bi-bell"></i>
+                <span>Alerts</span>
+              </a>
+              <a href="#">
+                <i class="bi bi-gear"></i>
+                <span>Settings</span>
+              </a>
+              <a href="#">
+                <i class="bi bi-person-circle"></i>
+                <span>Profile</span>
+              </a>
+            </nav>
+          </footer>
+        </div>
+
+        <!-- Right Sidebar -->
+        <div id="rightSidebar" class="sidebar right-sidebar">
+            <button class="button is-small is-dark" onclick="toggleSidebar('rightSidebar')"><i class="bi bi-box-arrow-right" style="font-size: 17px;"></i></button>
+            
+            <button class="button is-small slider-icon is-primary bounceIn" onclick="toggleSidebar('rightSidebar')">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="arrow">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5" />
+                </svg>
+            </button>
+            <div class="rightBarSection">
+                <div class="" id="detailPanel">
+                    <p class="has-text-grey">Select an image to see details and tools here.</p>
+                </div>
+                <div class="panel">
+                    <p class="panel-heading">
+                      Sync Jobs
+                    </p>
+            
+                    <!-- Sync Job 1 -->
+                    <div class="panel-block px-0">
+                      <div>
+                        <span class="panel-icon">
+                            <i class="bi bi-arrow-repeat"></i>
+                        </span>
+                        Sync Job 1
+                      </div>
+                      <div>
+                        <span class="tag is-success">Completed</span>
+                        <div class="dropdown is-hoverable">
+                          <div class="dropdown-trigger">
+                            <button class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu1">
+                              <span>Actions</span>
+                              <span class="icon is-small">
+                                <i class="bi bi-caret-down-fill" aria-hidden="true"></i>
+                              </span>
+                            </button>
+                          </div>
+                          <div class="dropdown-menu" id="dropdown-menu1" role="menu">
+                            <div class="dropdown-content">
+                              <a href="#" class="dropdown-item">Retry</a>
+                              <a href="#" class="dropdown-item">Cancel</a>
+                            </div>
+                          </div>
+                        </div>
+                        <button class="button is-small toggle-details" aria-label="toggle details">
+                          <span class="icon">
+                            <i class="bi bi-caret-down-fill"></i>
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="sync-details" style="display: none;">
+                      <p><strong>Details:</strong> This sync job completed successfully.</p>
+                      <p><strong>Duration:</strong> 2 minutes</p>
+                      <p><strong>Records Synced:</strong> 150</p>
+                    </div>
+            
+                    <!-- Sync Job 2 -->
+                    <div class="panel-block px-0">
+                      <div>
+                        <span class="panel-icon">
+                            <i class="bi bi-arrow-repeat"></i>
+                        </span>
+                        Sync Job 2
+                      </div>
+                      <div>
+                        <span class="tag is-warning">In Progress</span>
+                        <div class="dropdown is-hoverable">
+                          <div class="dropdown-trigger">
+                            <button class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu2">
+                              <span>Actions</span>
+                              <span class="icon is-small">
+                                <i class="bi bi-caret-down-fill" aria-hidden="true"></i>
+                              </span>
+                            </button>
+                          </div>
+                          <div class="dropdown-menu" id="dropdown-menu2" role="menu">
+                            <div class="dropdown-content">
+                              <a href="#" class="dropdown-item">Retry</a>
+                              <a href="#" class="dropdown-item">Cancel</a>
+                            </div>
+                          </div>
+                        </div>
+                        <button class="button is-small toggle-details" aria-label="toggle details">
+                          <span class="icon">
+                            <i class="bi bi-caret-down-fill"></i>
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="sync-details" style="display: none;">
+                      <p><strong>Details:</strong> This sync job is currently in progress.</p>
+                      <p><strong>Started:</strong> 5 minutes ago</p>
+                      <p><strong>Progress:</strong> 60%</p>
+                    </div>
+            
+                    <!-- Sync Job 3 -->
+                    <div class="panel-block px-0">
+                      <div>
+                        <span class="panel-icon">
+                            <i class="bi bi-arrow-repeat"></i>
+                        </span>
+                        Sync Job 3
+                      </div>
+                      <div>
+                        <span class="tag is-danger">Failed</span>
+                        <div class="dropdown is-hoverable">
+                          <div class="dropdown-trigger">
+                            <button class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu3">
+                              <span>Actions</span>
+                              <span class="icon is-small">
+                                <i class="bi bi-caret-down-fill" aria-hidden="true"></i>
+                              </span>
+                            </button>
+                          </div>
+                          <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+                            <div class="dropdown-content">
+                              <a href="#" class="dropdown-item">Retry</a>
+                              <a href="#" class="dropdown-item">Cancel</a>
+                            </div>
+                          </div>
+                        </div>
+                        <button class="button is-small toggle-details" aria-label="toggle details">
+                          <span class="icon">
+                            <i class="bi bi-caret-down-fill"></i>
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="sync-details" style="display: none;">
+                      <p><strong>Details:</strong> This sync job failed due to a network error.</p>
+                      <p><strong>Error:</strong> Connection timed out</p>
+                      <p><strong>Retries:</strong> 3</p>
+                    </div>
+            
+                    <!-- Sync Job 4 -->
+                    <div class="panel-block px-0">
+                      <div>
+                        <span class="panel-icon">
+                            <i class="bi bi-arrow-repeat"></i>
+                        </span>
+                        Sync Job 4
+                      </div>
+                      <div>
+                        <span class="tag is-info">Full</span>
+                        <div class="dropdown is-hoverable">
+                          <div class="dropdown-trigger">
+                            <button class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu4">
+                              <span>Actions</span>
+                              <span class="icon is-small">
+                                <i class="bi bi-caret-down-fill" aria-hidden="true"></i>
+                              </span>
+                            </button>
+                          </div>
+                          <div class="dropdown-menu" id="dropdown-menu4" role="menu">
+                            <div class="dropdown-content">
+                              <a href="#" class="dropdown-item">Retry</a>
+                              <a href="#" class="dropdown-item">Cancel</a>
+                            </div>
+                          </div>
+                        </div>
+                        <button class="button is-small toggle-details" aria-label="toggle details">
+                          <span class="icon">
+                            <i class="bi bi-caret-down-fill"></i>
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="sync-details" style="display: none;">
+                      <p><strong>Details:</strong> This sync job is marked as full.</p>
+                      <p><strong>Records Synced:</strong> 1000</p>
+                    </div>
+            
+                    <!-- Sync Job 5 -->
+                    <div class="panel-block px-0">
+                      <div>
+                        <span class="panel-icon">
+                            <i class="bi bi-arrow-repeat"></i>
+                        </span>
+                        Sync Job 5
+                      </div>
+                      <div>
+                        <span class="tag is-light">Cancelled</span>
+                        <div class="dropdown is-hoverable">
+                          <div class="dropdown-trigger">
+                            <button class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu5">
+                              <span>Actions</span>
+                              <span class="icon is-small">
+                                <i class="bi bi-caret-down-fill" aria-hidden="true"></i>
+                              </span>
+                            </button>
+                          </div>
+                          <div class="dropdown-menu" id="dropdown-menu5" role="menu">
+                            <div class="dropdown-content">
+                              <a href="#" class="dropdown-item">Retry</a>
+                            </div>
+                          </div>
+                        </div>
+                        <button class="button is-small toggle-details" aria-label="toggle details">
+                          <span class="icon">
+                            <i class="bi bi-caret-down-fill"></i>
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="sync-details" style="display: none;">
+                      <p><strong>Details:</strong> This sync job was cancelled by the user.</p>
+                      <p><strong>Cancelled At:</strong> 10 minutes ago</p>
+                    </div>
+                  </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="content has-text-centered">
+            <p>&copy; 2025 Dashboard. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="js/media.js"></script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>
